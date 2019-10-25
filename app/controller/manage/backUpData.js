@@ -65,35 +65,39 @@ let BackUpDataController = {
 
             try {
                 child.execSync(cmdstr);
-                let output = fs.createWriteStream(databackforder + ms + '.zip');
-                let archive = archiver('zip');
+                let doArchive = () => {
+                    return new Promise((resolve, reject) => {
+                        let output = fs.createWriteStream(databackforder + ms + '.zip');
+                        let archive = archiver('zip');
 
-                output.on('close', async () => {
-                    console.log(archive.pointer() + ' total bytes');
-                    console.log('back up data success');
-                    console.log('archiver has been finalized and the output file descriptor has closed.');
-                    // 操作记录入库
-                    let optParams = {
-                        logs: "Data backup",
-                        path: dataPath,
-                        fileName: ms + '.zip'
-                    }
+                        output.on('close', async () => {
+                            console.log('back up data success');
+                            // 操作记录入库
+                            let optParams = {
+                                logs: "Data backup",
+                                path: dataPath,
+                                fileName: ms + '.zip'
+                            }
 
-                    await ctx.service.backUpData.create(optParams);
+                            await ctx.service.backUpData.create(optParams);
+                            resolve();
 
-                });
+                        });
 
-                output.on('end', function (ctx, app) {
-                    console.log('Data has been drained');
-                });
+                        output.on('end', function (ctx, app) {
+                            console.log('Data has been drained');
+                        });
 
-                archive.on('error', function (err) {
-                    throw err;
-                });
+                        archive.on('error', function (err) {
+                            throw err;
+                        });
 
-                archive.pipe(output);
-                archive.directory(dataPath + '/', false);
-                archive.finalize();
+                        archive.pipe(output);
+                        archive.directory(dataPath + '/', false);
+                        archive.finalize();
+                    })
+                }
+                await doArchive();
                 ctx.helper.renderSuccess(ctx);
             } catch (error) {
                 ctx.helper.renderFail(ctx, {
