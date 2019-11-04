@@ -39,8 +39,7 @@ exports.doraBackUpData = {
     initData: '', // 初始化数据脚本
     pluginsConfig: ` 
     exports.doraBackUpData = {\n
-        enable: true,\n
-        \n
+        enable: true,\n        package: 'egg-dora-backupdata',
     };\n
     `, // 插入到 plugins.js 中的配置
     defaultConfig: `
