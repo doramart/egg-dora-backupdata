@@ -17,7 +17,7 @@ exports.doraBackUpData = {
     isindex: 0, // 是否需要前台访问，1：需要，0：不需要,入口地址:'/ext/devteam/index/index'
     version: pkgInfo.version, // 版本号
     iconName: 'icon_cspace', // 主菜单图标名称
-    adminUrl: 'https://cdn.html-js.cn/cms/plugins/static/admin/backUpData/js/app.js',
+    adminUrl: '/backUpData/js/app.js',
     adminApi: [{
         url: 'backupDataManage/getBakList',
         method: 'get',
@@ -29,6 +29,11 @@ exports.doraBackUpData = {
         controllerName: 'backUpData',
         details: '执行数据备份',
     }, {
+        url: 'backupDataManage/restore',
+        method: 'post',
+        controllerName: 'restoreData',
+        details: '执行数据还原',
+    }, {
         url: 'backupDataManage/deleteDataItem',
         method: 'get',
         controllerName: 'removes',
@@ -39,8 +44,7 @@ exports.doraBackUpData = {
     initData: '', // 初始化数据脚本
     pluginsConfig: ` 
     exports.doraBackUpData = {\n
-        enable: true,\n
-        \n
+        enable: true,\n        package: 'egg-dora-backupdata',
     };\n
     `, // 插入到 plugins.js 中的配置
     defaultConfig: `
